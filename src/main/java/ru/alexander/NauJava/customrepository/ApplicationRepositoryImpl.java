@@ -1,10 +1,10 @@
-package customrepository;
+package ru.alexander.NauJava.customrepository;
 
-import entity.Application;
-import entity.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.alexander.NauJava.entity.Application;
+import ru.alexander.NauJava.entity.User;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ApplicationRepositoryImpl implements ApplicationRepositoryCustom {
     }
 
     @Override
-    public List<Application> findByUser(User user) {
+    public List<Application> findAllByUser(User user) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Application.class);
         var applicationRoot = criteriaQuery.from(Application.class);

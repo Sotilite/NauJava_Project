@@ -1,4 +1,4 @@
-package entity;
+package ru.alexander.NauJava.entity;
 
 import jakarta.persistence.*;
 
@@ -84,3 +84,4 @@ public class User {
         return creationDate;
     }
 }
+

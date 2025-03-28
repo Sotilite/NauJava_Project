@@ -1,8 +1,7 @@
-package repository;
+package ru.alexander.NauJava.repository;
 
-import entity.Application;
-import entity.User;
 import org.springframework.data.repository.CrudRepository;
+import ru.alexander.NauJava.entity.User;
 
 public interface UserRepository extends CrudRepository<User, Long> {
     /**

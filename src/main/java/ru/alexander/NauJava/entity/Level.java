@@ -1,24 +1,24 @@
-package entity;
+package ru.alexander.NauJava.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Role")
-public class Role {
+@Table(name = "Levels")
+public class Level {
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String title;
 
     @Column
     private String description;
 
-    public Role() {}
+    public Level() {}
 
-    public Role(String name, String description) {
-        this.name = name;
+    public Level(String title, String description) {
+        this.title = title;
         this.description = description;
     }
 
@@ -30,12 +30,12 @@ public class Role {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public void setDescription(String description) {

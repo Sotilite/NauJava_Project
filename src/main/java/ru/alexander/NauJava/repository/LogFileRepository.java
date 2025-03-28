@@ -1,8 +1,7 @@
-package repository;
+package ru.alexander.NauJava.repository;
 
-import entity.Application;
-import entity.LogFile;
 import org.springframework.data.repository.CrudRepository;
+import ru.alexander.NauJava.entity.LogFile;
 
 public interface LogFileRepository extends CrudRepository<LogFile, Long> {
     /**

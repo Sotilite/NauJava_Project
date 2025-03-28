@@ -1,9 +1,9 @@
-package customrepository;
+package ru.alexander.NauJava.customrepository;
 
-import entity.LogEvent;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ru.alexander.NauJava.entity.LogEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public class LogEventRepositoryImpl implements LogEventRepositoryCustom {
     }
 
     @Override
-    public List<LogEvent> findLogEventsByTimestampBetween(LocalDateTime startTime, LocalDateTime endTime) {
+    public List<LogEvent> findAllByTimestampBetween(LocalDateTime startTime, LocalDateTime endTime) {
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(LogEvent.class);
         var logEventRoot = criteriaQuery.from(LogEvent.class);

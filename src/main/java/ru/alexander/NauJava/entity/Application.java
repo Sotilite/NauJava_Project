@@ -1,8 +1,6 @@
-package entity;
+package ru.alexander.NauJava.entity;
 
 import jakarta.persistence.*;
-
-import java.lang.reflect.Array;
 
 @Entity
 @Table(name = "Applications")
@@ -25,10 +23,10 @@ public class Application {
 
     public Application() {}
 
-    public Application(User user, String name, String pathToApplication, String version) {
+    public Application(User user, String name, String pathToApp, String version) {
         this.user = user;
         this.name = name;
-        this.pathToApplication = pathToApplication;
+        this.pathToApplication = pathToApp;
         this.version = version;
     }
 

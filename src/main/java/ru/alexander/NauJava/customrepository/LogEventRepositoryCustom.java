@@ -1,6 +1,6 @@
-package customrepository;
+package ru.alexander.NauJava.customrepository;
 
-import entity.LogEvent;
+import ru.alexander.NauJava.entity.LogEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,5 +11,5 @@ public interface LogEventRepositoryCustom {
      * @param startTime начало отрезка времени
      * @param endTime конец отрезка времени
      * */
-    List<LogEvent> findLogEventsByTimestampBetween(LocalDateTime startTime, LocalDateTime endTime);
+    List<LogEvent> findAllByTimestampBetween(LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -1,4 +1,4 @@
-package entity;
+package ru.alexander.NauJava.entity;
 
 import jakarta.persistence.*;
 
@@ -14,7 +14,7 @@ public class LogEvent {
     @ManyToOne
     private LogFile logFile;
 
-    @Column
+    @OneToOne
     private Level level;
 
     @Column

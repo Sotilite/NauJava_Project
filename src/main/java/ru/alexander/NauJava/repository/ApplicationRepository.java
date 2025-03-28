@@ -1,9 +1,9 @@
-package repository;
+package ru.alexander.NauJava.repository;
 
-import entity.Application;
-import entity.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import ru.alexander.NauJava.entity.Application;
+import ru.alexander.NauJava.entity.User;
 
 import java.util.List;
 
@@ -12,11 +12,11 @@ public interface ApplicationRepository extends CrudRepository<Application, Long>
      * Находит все приложения, которые загружены у конкретного пользователя
      * @param user пользователь программы
      * */
-    @Query("FROM Application WHERE application.user = :user")
-    List<Application> findByUser(User user);
+    @Query(value = "FROM Application app WHERE app.user = :user")
+    List<Application> findAllByUser(User user);
 
     /**
-     * Находит программу по наименованию
+     * Находит программу по названию
      * @param appName название программы
      * */
     Application findByName(String appName);
