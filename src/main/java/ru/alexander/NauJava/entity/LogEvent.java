@@ -14,7 +14,7 @@ public class LogEvent {
     @ManyToOne
     private LogFile logFile;
 
-    @OneToOne
+    @ManyToOne
     private Level level;
 
     @Column

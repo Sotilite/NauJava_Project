@@ -2,12 +2,13 @@ package ru.alexander.NauJava.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import ru.alexander.NauJava.entity.Level;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import ru.alexander.NauJava.entity.LogEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RepositoryRestResource(path = "logEvents")
 public interface LogEventRepository extends CrudRepository<LogEvent, Long> {
     /**
      * Находит логи по диапазону времени
