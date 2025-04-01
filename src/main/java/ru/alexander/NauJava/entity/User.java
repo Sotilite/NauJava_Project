@@ -3,6 +3,7 @@ package ru.alexander.NauJava.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -25,6 +26,9 @@ public class User {
 
     @Column
     private LocalDateTime creationDate;
+
+    @OneToMany
+    private List<Application> applications;
 
     public User() {}
 
@@ -82,6 +86,14 @@ public class User {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
+
+    public List<Application> getApplications() {
+        return applications;
     }
 }
 
