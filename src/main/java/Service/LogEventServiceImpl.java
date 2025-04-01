@@ -2,9 +2,7 @@ package Service;
 
 import Core.LogEvent;
 import DataAccess.EventRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,17 +11,6 @@ import java.util.List;
 @Service
 public class LogEventServiceImpl implements LogEventService {
     private final EventRepository eventRepository;
-
-    @Value("${app.name}")
-    private String appName;
-
-    @Value("${app.version}")
-    private String appVersion;
-
-    @PostConstruct
-    public void init() {
-        System.out.printf("Application: %s, Version: %s\n", appName, appVersion);
-    }
 
     @Autowired
     public LogEventServiceImpl(EventRepository eventRepository) {
@@ -65,7 +52,7 @@ public class LogEventServiceImpl implements LogEventService {
         return eventRepository.contains(id);
     }
 
-    public List<LogEvent> getAllEvents() {
-        return eventRepository.getAllEvents();
+    public List<LogEvent> getAll() {
+        return eventRepository.getAll();
     }
 }

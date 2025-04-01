@@ -63,7 +63,7 @@ public class CommandProcessor {
                     System.out.println("Событие успешно удалено из журнала.");
                 }
                 case "all" -> {
-                    var allEvents = logEventService.getAllEvents();
+                    var allEvents = logEventService.getAll();
                     if (allEvents.isEmpty()) {
                         System.out.println("Журнал событий пуст");
                         return;

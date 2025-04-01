@@ -4,6 +4,7 @@ import Core.LogEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public interface LogEventService {
@@ -11,4 +12,6 @@ public interface LogEventService {
     LogEvent findById(Long id);
     void updateLevel(Long id, LogEvent.Level level);
     void deleteById(Long id);
+    boolean contains(Long id);
+    List<LogEvent> getAll();
 }

@@ -40,7 +40,7 @@ public class EventRepository implements CrudRepository<LogEvent, Long> {
         return logEvents.containsKey(id);
     }
 
-    public List<LogEvent> getAllEvents() {
+    public List<LogEvent> getAll() {
         return logEvents.values().stream().toList();
     }
 }
