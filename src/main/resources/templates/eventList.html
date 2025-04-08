@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Event List</title>
+</head>
+<body>
+<h1>Log Event List</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Level</th>
+        <th>Timestamp</th>
+        <th>Message</th>
+        <th>Owner</th>
+    </tr>
+    <tr th:each="event : ${events}">
+        <td th:text="${event.id}"></td>
+        <td th:text="${event.level.title}"></td>
+        <td th:text="${event.timestamp}"></td>
+        <td th:text="${event.message}"></td>
+        <td th:text="${event.logFile.name}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

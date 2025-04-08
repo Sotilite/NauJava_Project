@@ -1,5 +1,6 @@
 package ru.alexander.NauJava.customrepository;
 
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import ru.alexander.NauJava.entity.Application;
 import ru.alexander.NauJava.entity.User;
 

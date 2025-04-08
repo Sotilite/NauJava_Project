@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Application List</title>
+</head>
+<body>
+<h1>Application List</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Version</th>
+        <th>Owner</th>
+    </tr>
+    <tr th:each="app : ${applications}">
+        <td th:text="${app.id}"></td>
+        <td th:text="${app.name}"></td>
+        <td th:text="${app.pathToApplication}"></td>
+        <td th:text="${app.version}"></td>
+        <td th:text="${app.user.login}"></td>
+    </tr>
+</table>
+</body>
+</html>
