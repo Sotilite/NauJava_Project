@@ -12,6 +12,7 @@ import ru.alexander.NauJava.repository.*;
 import ru.alexander.NauJava.service.LevelService;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @SpringBootTest
 class NauJavaApplicationTests {
@@ -67,7 +68,7 @@ class NauJavaApplicationTests {
 	void testFindApplicationsByUser() {
 		addTestDataToDB();
 		var user = userRepository.findByLogin("Alex3000");
-		var apps = applicationRepository.findAllByUser(user);
+		var apps = applicationRepository.findAllByUserLogin(user.getLogin());
 		Assertions.assertEquals(2, apps.size());
 		deleteTestDataFromDB();
 	}
@@ -130,12 +131,13 @@ class NauJavaApplicationTests {
 	@Test
 	void addTestDataToDB() {
 		//Добавление роли
-		var viewer = new Role("VIEWER", "User can only view logs");
-		roleRepository.save(viewer);
+		var user = new Role("USER", "User can only view logs");
+		var admin = new Role("ADMIN", "User can add new users");
+		roleRepository.saveAll(Arrays.asList(user, admin));
 
 		//Добавление пользователя
 		var creationDate = LocalDateTime.of(2020, 5, 23, 14, 23);
-		var sasha = new User("Sasha", "Alex3000", "qwerty123456", viewer, creationDate);
+		var sasha = new User("Sasha", "Alex3000", "qwerty123456", user, creationDate);
 		userRepository.save(sasha);
 
 		//Добавление программы

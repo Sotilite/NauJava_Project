@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.alexander.NauJava.entity.User;
 import ru.alexander.NauJava.repository.UserRepository;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
     @Autowired
