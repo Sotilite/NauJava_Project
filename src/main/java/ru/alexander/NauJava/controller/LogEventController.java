@@ -11,7 +11,7 @@ import ru.alexander.NauJava.repository.LogEventRepository;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/logEvents")
 public class LogEventController {
     @Autowired

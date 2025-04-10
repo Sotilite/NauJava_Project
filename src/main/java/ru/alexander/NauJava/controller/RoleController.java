@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.alexander.NauJava.entity.Role;
 import ru.alexander.NauJava.repository.RoleRepository;
 
-@RestController
+@Controller
 @RequestMapping("/roles")
 public class RoleController {
     @Autowired

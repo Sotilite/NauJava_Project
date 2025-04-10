@@ -22,5 +22,4 @@ public class Exception {
     public static Exception create(String message) {
         return new Exception(message);
     }
-
 }

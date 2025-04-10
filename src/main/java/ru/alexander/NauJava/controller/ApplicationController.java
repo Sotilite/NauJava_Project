@@ -11,7 +11,7 @@ import ru.alexander.NauJava.repository.ApplicationRepository;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/applications")
 public class ApplicationController {
     @Autowired

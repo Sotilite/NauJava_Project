@@ -5,20 +5,24 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import ru.alexander.NauJava.entity.Level;
 import ru.alexander.NauJava.repository.LevelRepository;
 import ru.alexander.NauJava.repository.LogEventRepository;
 
 @Service
 public class LevelServiceImpl implements LevelService {
-    private final LevelRepository levelRepository;
-    private final LogEventRepository logEventRepository;
-    private final PlatformTransactionManager transactionManager;
+    @Autowired
+    LevelRepository levelRepository;
 
     @Autowired
-    public LevelServiceImpl(LevelRepository levelRepository, LogEventRepository logEventRepository, PlatformTransactionManager transactionManager) {
-        this.levelRepository = levelRepository;
-        this.logEventRepository = logEventRepository;
-        this.transactionManager = transactionManager;
+    LogEventRepository logEventRepository;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
+
+    @Override
+    public Level findLevelByTitle(String levelTitle) {
+        return levelRepository.findByTitle(levelTitle);
     }
 
     @Override
