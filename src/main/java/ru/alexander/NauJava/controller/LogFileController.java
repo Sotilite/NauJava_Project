@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.alexander.NauJava.entity.LogFile;
 import ru.alexander.NauJava.repository.LogFileRepository;
 
-@RestController
+@Controller
 @RequestMapping("/logFiles")
 public class LogFileController {
     @Autowired

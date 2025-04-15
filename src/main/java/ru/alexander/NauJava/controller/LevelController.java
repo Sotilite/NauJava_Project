@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.alexander.NauJava.entity.Level;
 import ru.alexander.NauJava.repository.LevelRepository;
 
-@RestController
+@Controller
 @RequestMapping("/levels")
 public class LevelController {
     @Autowired

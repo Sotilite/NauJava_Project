@@ -88,8 +88,8 @@ public class User {
         return creationDate;
     }
 
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
+    public void addApplication(Application application) {
+        this.applications.add(application);
     }
 
     public List<Application> getApplications() {
