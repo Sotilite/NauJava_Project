@@ -19,7 +19,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String adduser(CustomUserDetails userDetails, Model model) {
+    public String addUser(CustomUserDetails userDetails, Model model) {
         try {
             userService.addUser(userDetails);
             return "redirect:/login";
