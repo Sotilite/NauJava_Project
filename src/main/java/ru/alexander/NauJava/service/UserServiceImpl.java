@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
             throw new Exception("This user already exists");
         }
 
-        var existingRole = roleService.findRoleByTitle("ADMIN");
+        var existingRole = roleService.findRoleByTitle("USER");
         userRepository.save(
                 new User("default",
                         userDetails.getUsername(),
@@ -44,6 +44,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    @Override
+    public Long countUsers() {
+        return userRepository.count();
     }
 
     @Override
