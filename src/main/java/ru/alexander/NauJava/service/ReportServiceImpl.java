@@ -1,13 +1,14 @@
 package ru.alexander.NauJava.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.alexander.NauJava.entity.Report;
+import ru.alexander.NauJava.entity.ReportContent;
 import ru.alexander.NauJava.enums.Status;
 import ru.alexander.NauJava.repository.ReportRepository;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -54,15 +55,21 @@ public class ReportServiceImpl implements ReportService {
     public void startReportGeneration(Long reportId) {
         var startTime = System.currentTimeMillis();
         var generationReport = reportRepository.findById(reportId);
+        var reportContent = new ReportContent();
 
         var future = CompletableFuture.supplyAsync(() -> {
             try {
-                var data = new HashMap<String, String>();
                 var computeUserCount = new Thread(() -> {
-                    calculateNumberOfUsers(data);
+                    synchronized (reportContent) {
+                        reportContent.setNumberOfUsers(userService.countUsers());
+                        reportContent.setUserCountTime(System.currentTimeMillis() - startTime);
+                    }
                 });
                 var computeApplicationList = new Thread(() -> {
-                    generateApplicationList(data);
+                    synchronized (reportContent) {
+                        reportContent.setApplications(applicationService.allApplications());
+                        reportContent.setAppListTime(System.currentTimeMillis() - startTime);
+                    }
                 });
                 computeUserCount.start();
                 computeApplicationList.start();
@@ -70,16 +77,18 @@ public class ReportServiceImpl implements ReportService {
                 computeUserCount.join();
                 computeApplicationList.join();
 
-                synchronized (data) {
-                    data.put("{{generalTime}}", String.valueOf(System.currentTimeMillis() - startTime));
+                synchronized (reportContent) {
+                    reportContent.setGeneralTime(System.currentTimeMillis() - startTime);
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.registerModule(new JavaTimeModule());
+                    return mapper.writeValueAsString(reportContent);
                 }
-                return getCompletedTable(data);
-            } catch (InterruptedException interruptedEx) {
+            } catch (Exception exception) {
                 if (generationReport.isPresent()) {
                     try {
                         updateReport(generationReport.get().getId(), String.valueOf(Status.ERROR), "");
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                    } catch (Exception updateException) {
+                        throw new RuntimeException(updateException);
                     }
                 }
                 throw new RuntimeException();
@@ -90,39 +99,10 @@ public class ReportServiceImpl implements ReportService {
             if (generationReport.isPresent()) {
                 try {
                     updateReport(generationReport.get().getId(), String.valueOf(Status.COMPLETED), result);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                } catch (Exception updateException) {
+                    throw new RuntimeException(updateException);
                 }
             }
         });
-    }
-
-    private synchronized void calculateNumberOfUsers(Map<String, String> data) {
-        var startTimeForComputingUserCount = System.currentTimeMillis();
-        var numberOfUsers = userService.countUsers();
-        data.put("{{userNumber}}", String.valueOf(numberOfUsers));
-        data.put("{{userCountTime}}", String.valueOf(System.currentTimeMillis() - startTimeForComputingUserCount));
-    }
-
-    private synchronized void generateApplicationList(Map<String, String> data) {
-        var startTimeForComputingAppList = System.currentTimeMillis();
-        var applications = applicationService.allApplications();
-        var appList = new StringBuilder();
-        for (var app : applications) {
-            appList.append(String.format("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                    app.getId(), app.getName(), app.getPathToApplication(), app.getVersion(), app.getUser().getLogin()));
-        }
-        data.put("{{appList}}", appList.toString());
-        data.put("{{appListTime}}", String.valueOf(System.currentTimeMillis() - startTimeForComputingAppList));
-    }
-
-    private String getCompletedTable(Map<String, String> data) {
-        var table = Report.table;
-        table = table.replace("{{userNumber}}", data.get("{{userNumber}}"));
-        table = table.replace("{{userCountTime}}", data.get("{{userCountTime}}"));
-        table = table.replace("{{appList}}", data.get("{{appList}}"));
-        table = table.replace("{{appListTime}}", data.get("{{appListTime}}"));
-        table = table.replace("{{generalTime}}", data.get("{{generalTime}}"));
-        return table;
     }
 }

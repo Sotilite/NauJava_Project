@@ -60,7 +60,51 @@
     <h2 style="text-align: center;">Содержимое отчета</h2>
     <div th:if="${report.status == 'CREATED'}">Report has already been created</div>
     <div th:if="${report.status == 'ERROR'}">An error occurred when generating the report</div>
-    <div th:if="${report.status == 'COMPLETED'}" th:utext="${report.getContent}"></div>
+    <div th:if="${report.status == 'COMPLETED'}">
+        <div>
+            <table border="1" style="margin: auto; width: 70%">
+                <tr>
+                    <th colspan=\"5\">Application list</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Version</th>
+                    <th>Owner</th>
+                </tr>
+                <tr th:each="app : ${applications}">
+                    <td th:text="${app.id}"></td>
+                    <td th:text="${app.name}"></td>
+                    <td th:text="${app.pathToApplication}"></td>
+                    <td th:text="${app.version}"></td>
+                    <td th:text="${app.user.login}"></td>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${appListTime}"></th>
+                </tr>
+                <tr>
+                    <th colspan="5">User count</th>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: left;">Number of users</td>
+                    <td th:text="${numberOfUsers}"></td>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${userCountTime}"></th>
+                </tr>
+                <tr>
+                    <th colspan="5">General metrics</th>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${generalTime}"></th>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>
