@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Viewer</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    .report-content {
+        background-color: white;
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+</style>
+<body>
+<h1>Report Viewer</h1>
+<form th:action="@{/reports/create}" method="post">
+    <div><button type="submit">Create report</button></div>
+</form>
+<form th:action="@{/reports/getContent}" method="post" style="margin-top: 20px;">
+    <div><label>Report ID: <input type="text" name="id" th:value="${reportId}"/></label></div>
+    <div><button type="submit" style="margin-top: 10px;">Get content by ID</button></div>
+</form>
+<div th:if="${report != null}"  class="report-content">
+    <h2 style="text-align: center;">Содержимое отчета</h2>
+    <div th:if="${report.status == 'CREATED'}">Report has already been created</div>
+    <div th:if="${report.status == 'ERROR'}">An error occurred when generating the report</div>
+    <div th:if="${report.status == 'COMPLETED'}">
+        <div>
+            <table border="1" style="margin: auto; width: 70%">
+                <tr>
+                    <th colspan=\"5\">Application list</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Version</th>
+                    <th>Owner</th>
+                </tr>
+                <tr th:each="app : ${applications}">
+                    <td th:text="${app.id}"></td>
+                    <td th:text="${app.name}"></td>
+                    <td th:text="${app.pathToApplication}"></td>
+                    <td th:text="${app.version}"></td>
+                    <td th:text="${app.user.login}"></td>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${appListTime}"></th>
+                </tr>
+                <tr>
+                    <th colspan="5">User count</th>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: left;">Number of users</td>
+                    <td th:text="${numberOfUsers}"></td>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${userCountTime}"></th>
+                </tr>
+                <tr>
+                    <th colspan="5">General metrics</th>
+                </tr>
+                <tr>
+                    <th colspan="4" style="text-align: left;">Calculation time (mls)</th>
+                    <th th:text="${generalTime}"></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

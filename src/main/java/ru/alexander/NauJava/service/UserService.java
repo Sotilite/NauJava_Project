@@ -20,6 +20,11 @@ public interface UserService extends UserDetailsService {
     User findUserByLogin(String login);
 
     /**
+     * Подсчитывает всех пользователей
+     * */
+    Long countUsers();
+
+    /**
      * Возвращает всех пользователей системы
      * */
     List<User> allUsers();
