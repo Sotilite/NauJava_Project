@@ -33,11 +33,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Report findReportById(Long id) {
         var report = reportRepository.findById(id);
-        if (report.isPresent()) {
-            return report.get();
-        }
-        var newReportId = createReport();
-        return findReportById(newReportId);
+        return report.orElse(null);
     }
 
     @Override
@@ -49,6 +45,11 @@ public class ReportServiceImpl implements ReportService {
         updatingReport.setStatus(status);
         updatingReport.setContent(content);
         reportRepository.save(updatingReport);
+    }
+
+    @Override
+    public void deleteReport(Report report) {
+        reportRepository.delete(report);
     }
 
     @Override
