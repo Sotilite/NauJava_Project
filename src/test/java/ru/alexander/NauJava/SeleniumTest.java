@@ -1,22 +1,29 @@
 package ru.alexander.NauJava;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SeleniumTest {
+    @LocalServerPort
+    private int port;
+
     private WebDriver webDriver;
 
     @BeforeEach
     public void setUp() {
+        RestAssured.port = port;
+        RestAssured.baseURI = "http://localhost";
         webDriver = new ChromeDriver();
         webDriver.manage().window().maximize();
     }

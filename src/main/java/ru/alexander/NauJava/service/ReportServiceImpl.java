@@ -26,8 +26,8 @@ public class ReportServiceImpl implements ReportService {
     public Long createReport() {
         var defaultStatus = String.valueOf(Status.CREATED);
         var newReport = new Report(defaultStatus, "");
-        reportRepository.save(newReport);
-        return newReport.getId();
+        var savedReport = reportRepository.save(newReport);
+        return savedReport.getId();
     }
 
     @Override

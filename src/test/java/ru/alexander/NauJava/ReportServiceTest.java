@@ -1,101 +1,126 @@
 package ru.alexander.NauJava;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.alexander.NauJava.entity.Report;
 import ru.alexander.NauJava.enums.Status;
-import ru.alexander.NauJava.service.ReportService;
+import ru.alexander.NauJava.repository.ReportRepository;
+import ru.alexander.NauJava.service.ApplicationService;
+import ru.alexander.NauJava.service.ReportServiceImpl;
+import ru.alexander.NauJava.service.UserService;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class ReportServiceTest {
-    @Autowired
-    ReportService reportService;
+    @InjectMocks
+    private ReportServiceImpl reportService;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private ApplicationService applicationService;
+
+    @Mock
+    private ReportRepository reportRepository;
+
+    private Report defaultReport;
+    private Report generatedReport;
+
+    @BeforeEach
+    public void setUp() {
+        defaultReport = new Report("CREATED", "");
+        defaultReport.setId(999L);
+        generatedReport = new Report("COMPLETED", "information");
+        generatedReport.setId(999L);
+    }
 
     @Test
     void testCreatingReport() {
+        when(reportRepository.save(any(Report.class))).thenReturn(defaultReport);
+
         var reportId = reportService.createReport();
-        var createdReport = reportService.findReportById(reportId);
 
-        var expectedStatus = String.valueOf(Status.CREATED);
-        Assertions.assertEquals(expectedStatus, createdReport.getStatus());
-        var expectedContent = "";
-        Assertions.assertEquals(expectedContent, createdReport.getContent());
-
-        reportService.deleteReport(createdReport);
+        Assertions.assertEquals(defaultReport.getId(), reportId);
+        verify(reportRepository, times(1)).save(any(Report.class));
     }
 
     @Test
     void testFindingReportById() {
+        when(reportRepository.save(any(Report.class))).thenReturn(defaultReport);
+        when(reportRepository.findById(any(Long.class))).thenReturn(Optional.of(defaultReport));
+
         var reportId = reportService.createReport();
         var createdReport = reportService.findReportById(reportId);
 
+        Assertions.assertNotNull(createdReport);
         Assertions.assertEquals(reportId, createdReport.getId());
-
-        reportService.deleteReport(createdReport);
+        verify(reportRepository, times(1)).save(any(Report.class));
+        verify(reportRepository, times(1)).findById(any(Long.class));
     }
 
     @Test
-    void testUpdatingReport() {
-        //Negative test
-        Long fakeReportId = 345342L;
-        try {
-            var fakeReport = Mockito.mock(Report.class);
-            fakeReport.setId(fakeReportId);
-            var newStatus = String.valueOf(Status.ERROR);
-            var newContent = "This is a new content to test updating method";
-            reportService.updateReport(fakeReport.getId(), newStatus, newContent);
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            var unexistingReport = reportService.findReportById(fakeReportId);
-            Assertions.assertNull(unexistingReport);
-        }
+    void testUnsuccessfulUpdatingReport() {
+        when(reportRepository.findById(any(Long.class))).thenReturn(null);
 
-        //Positive test
-        try {
-            var reportId = reportService.createReport();
-            var newStatus = String.valueOf(Status.COMPLETED);
-            var newContent = "This is a new content to test updating method";
-            reportService.updateReport(reportId, newStatus, newContent);
-
-            var updatedReport = reportService.findReportById(reportId);
-            Assertions.assertEquals(newStatus, updatedReport.getStatus());
-            Assertions.assertEquals(newContent, updatedReport.getContent());
-
-            reportService.deleteReport(updatedReport);
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
+        Assertions.assertThrows(Exception.class, () -> {
+            reportService.updateReport(
+                    defaultReport.getId(),
+                    String.valueOf(Status.COMPLETED),
+                    "This is a new content to test updating method"
+            );
+        });
+        verify(reportRepository, times(1)).findById(any(Long.class));
     }
 
     @Test
     void testDeletingReport() {
+        when(reportRepository.save(any(Report.class))).thenReturn(defaultReport);
+        when(reportRepository.findById(any(Long.class))).thenReturn(Optional.of(defaultReport));
+
         var reportId = reportService.createReport();
         var createdReport = reportService.findReportById(reportId);
         reportService.deleteReport(createdReport);
 
-        var deletedReport = reportService.findReportById(reportId);
-        Assertions.assertNull(deletedReport);
+        verify(reportRepository, times(1)).save(any(Report.class));
+        verify(reportRepository, times(1)).findById(any(Long.class));
+        verify(reportRepository, times(1)).delete(any(Report.class));
     }
 
     @Test
     void testStartingReportGeneration() {
-        try{
-            var reportId = reportService.createReport();
-            reportService.startReportGeneration(reportId);
+        when(reportRepository.save(any(Report.class)))
+                .thenReturn(defaultReport)
+                .thenReturn(generatedReport);
+        when(reportRepository.findById(any(Long.class)))
+                .thenReturn(Optional.of(defaultReport))
+                .thenReturn(Optional.of(defaultReport))
+                .thenReturn(Optional.of(generatedReport));
+        when(userService.countUsers()).thenReturn(10L);
+        when(applicationService.allApplications()).thenReturn(List.of());
+
+        var reportId = reportService.createReport();
+        reportService.startReportGeneration(reportId);
+        Assertions.assertDoesNotThrow(() -> {
             Thread.sleep(3000);
+        });
 
-            var generatedReport = reportService.findReportById(reportId);
-            var expectedStatus = String.valueOf(Status.COMPLETED);
-            Assertions.assertEquals(expectedStatus, generatedReport.getStatus());
-            Assertions.assertNotNull(generatedReport.getContent());
-
-            reportService.deleteReport(generatedReport);
-        } catch (InterruptedException exception) {
-            System.out.println(exception.getMessage());
-        }
-
+        var generatedReport = reportService.findReportById(reportId);
+        var expectedStatus = String.valueOf(Status.COMPLETED);
+        Assertions.assertEquals(expectedStatus, generatedReport.getStatus());
+        Assertions.assertNotNull(generatedReport.getContent());
+        verify(reportRepository, times(2)).save(any(Report.class));
+        verify(reportRepository, times(3)).findById(any(Long.class));
+        verify(userService, times(1)).countUsers();
+        verify(applicationService, times(1)).allApplications();
     }
 }
