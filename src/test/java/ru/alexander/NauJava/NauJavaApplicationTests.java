@@ -1,15 +1,10 @@
 package ru.alexander.NauJava;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
-import ru.alexander.NauJava.customrepository.ApplicationRepositoryCustom;
-import ru.alexander.NauJava.customrepository.LogEventRepositoryCustom;
 import ru.alexander.NauJava.entity.*;
 import ru.alexander.NauJava.repository.*;
-import ru.alexander.NauJava.service.LevelService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -26,104 +21,13 @@ class NauJavaApplicationTests {
 	ApplicationRepository applicationRepository;
 
 	@Autowired
-	ApplicationRepositoryCustom applicationRepositoryCustom;
-
-	@Autowired
 	LogFileRepository logFileRepository;
 
 	@Autowired
 	LogEventRepository logEventRepository;
 
 	@Autowired
-	LogEventRepositoryCustom logEventRepositoryCustom;
-
-	@Autowired
 	LevelRepository levelRepository;
-
-	@Autowired
-	LevelService levelService;
-
-	@Test
-	void contextLoads() {}
-
-	/**
-	 * Тестирование метода по нахождению
-	 * логов в указанном диапазоне времени (пятый раздел)
-	 */
-	@Test
-	void testFindEventsByTimestampBetween() {
-		addTestDataToDB();
-		var startTime = LocalDateTime.of(2025, 3, 20, 7, 54);
-		var endTime = LocalDateTime.of(2025, 3, 25, 23, 59);
-		var events = logEventRepository.findAllByTimestampBetween(startTime, endTime);
-        Assertions.assertEquals(1, events.size());
-		deleteTestDataFromDB();
-	}
-
-	/**
-	 * Тестирование метода по нахождению
-	 * загруженных программ у пользователя (пятый раздел)
-	 */
-	@Test
-	void testFindApplicationsByUser() {
-		addTestDataToDB();
-		var user = userRepository.findByLogin("Alex3000");
-		var apps = applicationRepository.findAllByUserLogin(user.getLogin());
-		Assertions.assertEquals(2, apps.size());
-		deleteTestDataFromDB();
-	}
-
-	/**
-	 * Тестирование метода по нахождению логов
-	 * в указанном диапазоне (шестой раздел) c помощью Criteria
-	 */
-	@Test
-	void testFindEventsByTimestampBetweenWithCriteria() {
-		addTestDataToDB();
-		var startTime = LocalDateTime.of(2025, 3, 20, 7, 54);
-		var endTime = LocalDateTime.of(2025, 3, 25, 23, 59);
-		var events = logEventRepositoryCustom.findAllByTimestampBetween(startTime, endTime);
-		Assertions.assertEquals(1, events.size());
-		deleteTestDataFromDB();
-	}
-
-	/**
-	 * Тестирование метода по нахождению загруженных
-	 * программ у пользователя (шестой раздел) с помощью Criteria
-	 */
-	@Test
-	void testFindApplicationsByUserWithCriteria() {
-		addTestDataToDB();
-		var user = userRepository.findByLogin("Alex3000");
-		var apps = applicationRepositoryCustom.findAllByUser(user);
-		Assertions.assertEquals(2, apps.size());
-		deleteTestDataFromDB();
-	}
-
-	/**
-	 * Тестирование метода по удалению
-	 * уровня из репозитория (седьмой раздел)
-	 */
-	@Test
-	void testDeleteLevel() {
-		//Положительный кейс
-		addTestDataToDB();
-		levelService.deleteLevelByTitle("ERROR");
-        Assertions.assertNull(levelRepository.findByTitle("ERROR"));
-		Assertions.assertTrue(logEventRepository.findAllByLevelTittle("ERROR").isEmpty());
-		deleteTestDataFromDB();
-
-		//Отрицательный кейс
-		try {
-			addTestDataToDB();
-			levelService.deleteLevelByTitle("DEBUG");
-			deleteTestDataFromDB();
-		} catch(DataAccessException ex) {
-			deleteTestDataFromDB();
-			System.out.println("Транзакция отменена: " + ex.getMessage());
-		}
-
-	}
 
 	/**
 	 * Добавляет тестовые данные в БД

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.alexander.NauJava.entity.ReportContent;
 import ru.alexander.NauJava.enums.Status;
 import ru.alexander.NauJava.service.ReportService;
@@ -37,17 +38,19 @@ public class ReportController {
     @PostMapping("/getContent")
     public String getReportContent(String id, Model model) throws JsonProcessingException {
         var report = reportService.findReportById(Long.valueOf(id));
-        model.addAttribute("reportId", id);
-        model.addAttribute("report", report);
-        if(Objects.equals(report.getStatus(), String.valueOf(Status.COMPLETED))) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            var content = mapper.readValue(report.getContent(), ReportContent.class);
-            model.addAttribute("applications", content.getApplications());
-            model.addAttribute("appListTime", content.getAppListTime());
-            model.addAttribute("numberOfUsers", content.getNumberOfUsers());
-            model.addAttribute("userCountTime", content.getUserCountTime());
-            model.addAttribute("generalTime", content.getGeneralTime());
+        if(report != null) {
+            model.addAttribute("reportId", id);
+            model.addAttribute("report", report);
+            if(Objects.equals(report.getStatus(), String.valueOf(Status.COMPLETED))) {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                var content = mapper.readValue(report.getContent(), ReportContent.class);
+                model.addAttribute("applications", content.getApplications());
+                model.addAttribute("appListTime", content.getAppListTime());
+                model.addAttribute("numberOfUsers", content.getNumberOfUsers());
+                model.addAttribute("userCountTime", content.getUserCountTime());
+                model.addAttribute("generalTime", content.getGeneralTime());
+            }
         }
         return "reportViewer";
     }

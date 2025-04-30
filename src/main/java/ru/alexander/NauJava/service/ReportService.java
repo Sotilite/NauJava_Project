@@ -23,6 +23,12 @@ public interface ReportService {
     void updateReport(Long id, String status, String content) throws Exception;
 
     /**
+     * Удаление отчета
+     * @param report отчет
+     * */
+    void deleteReport(Report report);
+
+    /**
      * Запускает формирование отчета ассинхронно
      * @param reportId идентификатор отчета, для которого нужно запустить процесс формирования
      * */
